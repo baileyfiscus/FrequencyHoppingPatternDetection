@@ -24,7 +24,7 @@ void DetectorWork(PatternDetector& detector);
 
 int main()
 {
-    auto medium = Medium();
+    auto medium = Medium(NUMBER_OF_CHANNELS);
     auto patternGen = PatternGenerator(NUMBER_OF_CHANNELS, MIN_DURATION_FRAMES, MAX_DURATION_FRAMES);
     auto pattern = patternGen.GetPattern();
     auto sender = Sender(medium, pattern, US_PER_FRAME);

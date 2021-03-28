@@ -1,6 +1,7 @@
 #include <chrono>
 #include <climits>
 #include <iostream>
+#include <thread>
 
 #include "Sender.h"
 
@@ -22,6 +23,7 @@ void Sender::SendLoop()
             mMedium->SetChannelActive(channel);
             while (std::chrono::high_resolution_clock::now() < endtime) {}
             mMedium->SetChannelInactive();
+            std::this_thread::sleep_for(std::chrono::microseconds(50));
         }
     }
 }
