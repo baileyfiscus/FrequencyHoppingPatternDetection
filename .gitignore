@@ -1,9 +1,8 @@
-bin/*
+bin/
 
-build/*
+build/
 
-doc/*.aux
-doc/*.log
-doc/*.synctex.gz
-
+*.aux
+*.log
+*.synctex.gz
 
