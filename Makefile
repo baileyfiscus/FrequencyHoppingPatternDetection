@@ -1,5 +1,5 @@
-CC := g++ # This is the main compiler
-# CC := clang --analyze # and comment out the linker last line for sanity
+CXX := g++ # This is the main compiler
+# CXX := clang --analyze # and comment out the linker last line for sanity
 SRCDIR := src
 BUILDDIR := build
 TARGET := bin/FrequencyHoppingPatternDetector
@@ -7,17 +7,17 @@ TARGET := bin/FrequencyHoppingPatternDetector
 SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
-CFLAGS := -std=c++17 -g # -Wall
+CPPFLAGS := -std=c++17 -g -pthread# -Wall
 #LIB := 
 INC := -I include
 
 $(TARGET): $(OBJECTS)
 	@echo " Linking..."
-	@echo " $(CC) $^ -o $(TARGET) $(LIB)"; $(CC) $^ -o $(TARGET) $(LIB)
+	@echo " $(CXX) $^ -o $(TARGET) $(LIB)"; $(CXX) $(CPPFLAGS) $^ -o $(TARGET) $(LIB)
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)
-	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
+	@echo " $(CXX) $(CPPFLAGS) $(INC) -c -o $@ $<"; $(CXX) $(CPPFLAGS) $(INC) -c -o $@ $<
 
 clean:
 	@echo " Cleaning..."; 
@@ -25,6 +25,6 @@ clean:
 
 # Tests
 tester:
-	$(CC) $(CFLAGS) test/tester.cpp $(INC) $(LIB) -o bin/tester
+	$(CXXC) CPPFLAGS test/tester.cpp $(INC) $(LIB) -o bin/tester
 
 .PHONY: clean
