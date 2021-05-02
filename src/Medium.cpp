@@ -1,4 +1,5 @@
 #include "Medium.h"
+#include <thread>
 
 Medium::Medium(int channels) : mChannels(channels) {}
 

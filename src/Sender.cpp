@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <chrono>
 #include <climits>
 #include <iostream>
@@ -5,25 +6,24 @@
 
 #include "Sender.h"
 
-Sender::Sender(Medium& medium, std::vector<std::pair<int, int>> pattern, int usPerFrame)
-    : mMedium(&medium)
-    , mPattern(pattern)
-    , mUsPerFrame(usPerFrame)
-{}
-
-void Sender::SendLoop()
+Sender::Sender(Pattern* pattern)
+    : mPattern(pattern)
 {
-    while (true) {
-        for (auto pair : mPattern) {
-            auto channel = pair.first;
-            auto durationFrames = pair.second;
-            auto durationMicroseconds = durationFrames * mUsPerFrame;
-            auto endtime = std::chrono::high_resolution_clock::now() + std::chrono::microseconds(durationMicroseconds);
-            //std::cout << "Sending on channel " << channel << " for " << durationFrames << " frames." << std::endl;
-            mMedium->SetChannelActive(channel);
-            while (std::chrono::high_resolution_clock::now() < endtime) {}
-            mMedium->SetChannelInactive();
-            std::this_thread::sleep_for(std::chrono::microseconds(50));
-        }
+    mRemainingDuration = mPattern->GetDurationAt(mCurrentIndex);
+}
+
+Device::Operation Sender::GetOperation(int& frequency)
+{
+    if (mRemainingDuration-- <= 0) {
+        mCurrentIndex = (mCurrentIndex + 1) % mPattern->GetLength();
+        mRemainingDuration = mPattern->GetDurationAt(mCurrentIndex) - 1;
     }
+
+    frequency = mPattern->GetFrequencyAt(mCurrentIndex);
+    return Operation::SEND;
+}
+
+void Sender::SetListenResponse(bool bHeard)
+{
+
 }

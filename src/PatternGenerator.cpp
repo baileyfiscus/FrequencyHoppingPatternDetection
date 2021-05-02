@@ -1,13 +1,20 @@
-#include <random>
 #include <algorithm>
+#include <iostream>
+#include <random>
+
 #include "PatternGenerator.h"
 
-PatternGenerator::PatternGenerator(int channels, int minDuration, int maxDuration)
+PatternGenerator::PatternGenerator(size_t channels, size_t minDuration, size_t maxDuration)
     : mChannels(channels)
     , mMinDuration(minDuration)
     , mMaxDuration(maxDuration)
 {
     ConstructPattern();
+}
+
+PatternGenerator::~PatternGenerator()
+{
+    delete mPattern;
 }
 
 void PatternGenerator::ConstructPattern()
@@ -19,14 +26,18 @@ void PatternGenerator::ConstructPattern()
     std::mt19937 rand(rd());
     std::shuffle(freqOrder.begin(), freqOrder.end(), rand);
 
+    std::vector<std::pair<int, long>> patternVec;
+
     // Create the random duration for each frequency
     for (auto freq : freqOrder) {
-        int dur = std::rand() % (mMaxDuration - mMinDuration + 1);
-        mPattern.push_back(std::make_pair(freq, dur));
+        long dur = static_cast<long>(std::rand() % (mMaxDuration - mMinDuration + 1));
+        patternVec.push_back(std::make_pair(freq, dur));
     }
+
+    mPattern = new Pattern(patternVec);
 }
 
-std::vector<std::pair<int, int>> PatternGenerator::GetPattern()
+Pattern* PatternGenerator::GetPattern()
 {
     return mPattern;
 }

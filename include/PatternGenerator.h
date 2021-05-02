@@ -1,14 +1,16 @@
-#include <vector>
+#pragma once
+
+#include "Pattern.h"
 
 class PatternGenerator
 {
 public:
-    PatternGenerator(int channels, int minDuration, int maxDuration);
-    std::vector<std::pair<int, int>> GetPattern();
-
+    PatternGenerator(size_t channels, size_t minDuration, size_t maxDuration);
+    ~PatternGenerator();
+    Pattern* GetPattern();
 private:
-    int mChannels, mMinDuration, mMaxDuration;
-    std::vector<std::pair<int, int>> mPattern;
+    size_t mChannels, mMinDuration, mMaxDuration;
+    Pattern* mPattern;
 
     void ConstructPattern();
 };

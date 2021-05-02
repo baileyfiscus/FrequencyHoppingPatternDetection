@@ -3,15 +3,17 @@
 #include <string>
 #include <vector>
 
-#include "Medium.h"
+#include "Device.h"
+#include "Pattern.h"
 
-class Sender
+class Sender : public Device
 {
 public:
-    Sender(Medium& medium, std::vector<std::pair<int, int>> pattern, int usPerFrame);
-    void SendLoop();
+    Sender(Pattern* pattern);
+    virtual Operation GetOperation(int& frequency) override;
+    virtual void SetListenResponse(bool bHeard) override;
 private:
-    Medium* mMedium;
-    int mUsPerFrame = 0;
-    std::vector<std::pair<int, int>> mPattern;
+    Pattern* mPattern;
+    int mCurrentIndex = 0;
+    long mRemainingDuration;
 };
