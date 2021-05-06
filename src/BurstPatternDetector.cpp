@@ -4,14 +4,14 @@
 #include <thread>
 #include <vector>
 
-#include "PatternDetector.h"
+#include "BurstPatternDetector.h"
 
-PatternDetector::PatternDetector(size_t channelCount)
+BurstPatternDetector::BurstPatternDetector(size_t channelCount)
     : mChannelCount(channelCount)
 {
 }
 
-Device::Operation PatternDetector::GetOperation(int& frequency)
+Device::Operation BurstPatternDetector::GetOperation(int& frequency)
 {
     switch (mStatus) {
         case FIND_FREQUENCY:
@@ -20,13 +20,11 @@ Device::Operation PatternDetector::GetOperation(int& frequency)
             mLastFrequency = frequency;
             break;
         case FIND_DURATION:
-            FindDuration();
             mNextOperation = Device::Operation::LISTEN;
             frequency = mFrequencyOrder.back();
             mLastFrequency = frequency;
             break;
         case FIND_PATTERN_LENGTH:
-            FindPatternLength();
             mNextOperation = Device::Operation::LISTEN;
             frequency = mFrequencyOrder.back();
             mLastFrequency = frequency;
@@ -39,7 +37,7 @@ Device::Operation PatternDetector::GetOperation(int& frequency)
     return mNextOperation;
 }
 
-void PatternDetector::SetListenResponse(bool bHeard)
+void BurstPatternDetector::SetListenResponse(bool bHeard)
 {
     if ((mFrequencyOrder.size() == 0) && bHeard) {
         // Find first frequency
@@ -88,8 +86,8 @@ void PatternDetector::SetListenResponse(bool bHeard)
             }
             else {
                 mStatus = Status::DONE;
-                std::cout << "DONE!" << std::endl;
-                std::cin.get();
+                std::cout << "Burst DONE!" << std::endl;
+                SetPatternKnown(true);
             }
         }
     }
@@ -131,11 +129,11 @@ void PatternDetector::SetListenResponse(bool bHeard)
                 }
                 else {
                     mStatus = Status::DONE;
-                    std::cout << "DONE!\n" << std::endl;
+                    std::cout << "Burst DONE!" << std::endl;
+                    SetPatternKnown(true);
                     for (int i = 0; i < mFrequencyOrder.size(); i++) {
                         std::cout << "Frequency: " << mFrequencyOrder[i] << ", Duration: " << mDurationOrder[i] << std::endl;
                     }
-                    std::cin.get();
                 }
             }
         }
@@ -144,7 +142,7 @@ void PatternDetector::SetListenResponse(bool bHeard)
     mHeardLastResponse = bHeard;
 }
 
-int PatternDetector::GetFrequency()
+int BurstPatternDetector::GetFrequency()
 {
     if (mFrequencyOrder.size() == 0) {
         mFrequencyGuess = 0;
@@ -185,12 +183,4 @@ int PatternDetector::GetFrequency()
     }
 
     return 0;
-}
-
-void PatternDetector::FindDuration()
-{
-}
-
-void PatternDetector::FindPatternLength()
-{
 }

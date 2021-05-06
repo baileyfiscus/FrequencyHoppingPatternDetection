@@ -1,4 +1,7 @@
+#include <algorithm>
 #include <iostream>
+#include <numeric>
+#include <string>
 
 #include "Controller.h"
 
@@ -12,12 +15,21 @@ Controller::Controller(Medium* medium, std::vector<Device*> devices, long timeSl
 
 void Controller::Start()
 {
+    std::vector<bool> doesDeviceKnowPattern;
+    for (auto device : mDevices) {
+        doesDeviceKnowPattern.push_back(device->IsPatternKnown());
+    }
+
     unsigned long long loopCount = 0;
     while (true) {
         for (int i = 0; i < mTimeSlots; i++) {
             loopCount++;
             //std::cout << "Time slot: " << i << std::endl;
-            for (auto device : mDevices) {
+            bool bAllDevicesKnowPattern = true;
+            for (int deviceIndex = 0; deviceIndex < mDevices.size(); deviceIndex++) {
+                auto device = mDevices[deviceIndex];
+                bool bDidDeviceKnowPattern = doesDeviceKnowPattern[deviceIndex];
+                bAllDevicesKnowPattern &= bDidDeviceKnowPattern;
                 int frequency = -1;
                 switch (device->GetOperation(frequency)) {
                     case Device::Operation::SEND:
@@ -41,13 +53,23 @@ void Controller::Start()
                     }
                     case Device::Operation::NOOP:
                         //std::cout << "NOOP" << std::endl;
-                        std::cout << "Pattern Detected in " << loopCount << " frames." << std::endl;
-                        return;
                         break;
                     default:
                         break;
                 }
-                //std::cin.get();
+
+                std::string str = device->IsPatternKnown() ? "Knows pattern" : "Does NOT know pattern";
+                //std::cout << str << std::endl;
+
+                if (bDidDeviceKnowPattern != device->IsPatternKnown()) {
+                    // Device learned pattern
+                    doesDeviceKnowPattern[deviceIndex] = device->IsPatternKnown();
+                    std::cout << "Pattern Detected in " << loopCount << " frames." << std::endl;
+                }
+            }
+            if (bAllDevicesKnowPattern) {
+                std::cout << "All devices know pattern. Exiting." << std::endl;
+                return;
             }
         }
     }

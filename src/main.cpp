@@ -6,7 +6,8 @@
 
 #include "Controller.h"
 #include "Medium.h"
-#include "PatternDetector.h"
+#include "BurstPatternDetector.h"
+#include "PuzzlePiecePatternDetector.h"
 #include "PatternGenerator.h"
 #include "Sender.h"
 
@@ -30,11 +31,13 @@ int main()
 
     auto medium = Medium(NUMBER_OF_CHANNELS);
     auto sender = Sender(pattern);
-    auto detector = PatternDetector(NUMBER_OF_CHANNELS);
+    auto burstDetector = BurstPatternDetector(NUMBER_OF_CHANNELS);
+    auto pieceDetector = PuzzlePiecePatternDetector(NUMBER_OF_CHANNELS);
 
     std::vector<Device*> devices;
     devices.push_back(&sender);
-    devices.push_back(&detector);
+    devices.push_back(&burstDetector);
+    devices.push_back(&pieceDetector);
 
     auto controller = Controller(&medium, devices, pattern->GetTotalDuration());
     controller.Start();

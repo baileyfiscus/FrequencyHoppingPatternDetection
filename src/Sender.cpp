@@ -9,6 +9,7 @@
 Sender::Sender(Pattern* pattern)
     : mPattern(pattern)
 {
+    SetPatternKnown(true);
     mRemainingDuration = mPattern->GetDurationAt(mCurrentIndex);
 }
 
@@ -26,4 +27,9 @@ Device::Operation Sender::GetOperation(int& frequency)
 void Sender::SetListenResponse(bool bHeard)
 {
 
+}
+
+bool Sender::IsSender()
+{
+    return true;
 }

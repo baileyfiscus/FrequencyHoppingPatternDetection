@@ -1,19 +1,16 @@
 #pragma once
 
 #include <vector>
-#include <chrono>
 
 #include "Device.h"
 
-class PatternDetector : public Device
+class BurstPatternDetector : public Device
 {
 public:
-    PatternDetector(size_t channelCount);
+    BurstPatternDetector(size_t channelCount);
     virtual Operation GetOperation(int& frequency) override;
     virtual void SetListenResponse(bool bHeard) override;
     int GetFrequency();
-    void FindDuration();
-    void FindPatternLength();
 private:
     enum Status {
         FIND_FREQUENCY,

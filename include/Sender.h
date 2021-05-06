@@ -12,6 +12,7 @@ public:
     Sender(Pattern* pattern);
     virtual Operation GetOperation(int& frequency) override;
     virtual void SetListenResponse(bool bHeard) override;
+    virtual bool IsSender() override;
 private:
     Pattern* mPattern;
     int mCurrentIndex = 0;
