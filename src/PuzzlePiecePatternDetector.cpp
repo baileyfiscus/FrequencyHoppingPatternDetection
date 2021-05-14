@@ -89,7 +89,7 @@ void PuzzlePiecePatternDetector::SetListenResponse(bool bHeard)
             }
 
             if (patternFound) {
-                std::cout << "Puzzle DONE!" << std::endl;
+                std::cout << "\n\nPuzzle DONE!" << std::endl;
                 std::vector<int> freqOrder;
                 std::vector<std::size_t> durOrder;
                 for (int i = 0; i < mPuzzle.size(); i++) {

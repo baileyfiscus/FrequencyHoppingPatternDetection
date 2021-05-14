@@ -129,7 +129,7 @@ void BurstPatternDetector::SetListenResponse(bool bHeard)
                 }
                 else {
                     mStatus = Status::DONE;
-                    std::cout << "Burst DONE!" << std::endl;
+                    std::cout << "\n\nBurst DONE!" << std::endl;
                     SetPatternKnown(true);
                     for (int i = 0; i < mFrequencyOrder.size(); i++) {
                         std::cout << "Frequency: " << mFrequencyOrder[i] << ", Duration: " << mDurationOrder[i] << std::endl;
